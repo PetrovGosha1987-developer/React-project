@@ -1,0 +1,11 @@
+a {
+    color: #0000FF;
+    font-weight:900;
+    margin-left: 15px;
+    border-bottom: 2px solid grey;
+}
+
+img {
+	width: 60px;
+	height: 60px;
+}

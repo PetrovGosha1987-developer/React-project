@@ -1,0 +1,16 @@
+.footer {
+	width: 100%;
+	font-size: 22px;
+	background-color: var(--main-color);
+	color: #0000FF;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	border-top : 2px solid grey;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.logo-icon {
+	width: 15px;
+	height: 15px;
+}
