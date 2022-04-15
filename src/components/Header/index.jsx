@@ -8,7 +8,6 @@ import cat from './img/cat.svg'
 import style from './styles.module.css';
 
 export const CardHeader = ({childer, user}) => { 
-  
 
   return (
     <AppBar position="static" style={{ background: '#ffffff' }}>
