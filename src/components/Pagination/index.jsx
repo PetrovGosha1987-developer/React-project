@@ -1,28 +1,77 @@
-import React, { useState } from "react";
-import { Pagination, PaginationItem, Stack } from "@mui/material";
+import React from "react";
+import { Box, Paper, Link, Typography } from "@mui/material";
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
 
-import style from "./styles.module.css";
+const _Pagination = ({ setCurrentPage, currentPage, postsPerPage, totalPosts, prevPage, nextPage }) => {
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+    const pageNumbers = [];
 
-const _Pagination = () => {
+    for (let i = 1; i <= Math.ceil(totalPosts / postsPerPage); i++) {
+        pageNumbers.push(i);
+    }
+
+    const stylePaper = {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+    }
 
     return (
-        <div className={style.listing} >
-            <Stack spacing={2}>
-                <Pagination
-                    count={10}
-                    renderItem={(item) => (
-                        <PaginationItem
-                            components={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
-                            {...item}
-                        />
-                    )}
-                />
-            </Stack>
-        </div >
-
+        <Box sx={{
+            display: "flex",
+            marginBottom: "40px",
+            justifyContent: "center",
+            alignItems: "center"
+        }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    '& > :not(style)': {
+                        m: 1,
+                        width: 40,
+                        height: 40,
+                    },
+                }}
+            >
+                <Paper
+                    sx={stylePaper}>
+                    <Link
+                        href={`/?page=${currentPage}`}
+                        underline="hover"
+                        onClick={prevPage}
+                    >
+                        <KeyboardArrowLeft sx={{ pt: "4px" }} />
+                    </Link>
+                </Paper>
+                {pageNumbers.map((number, index) => (
+                    <Paper
+                        key={`${number}_${index}`}
+                        sx={stylePaper}
+                    >
+                        <Link
+                            href={`/?page=${number}`}
+                            underline="hover"
+                            onClick={() => setCurrentPage(number)}
+                        >
+                            <Typography color="text.secondary">
+                                {number}
+                            </Typography>
+                        </Link>
+                    </Paper>
+                ))}
+                <Paper
+                    sx={stylePaper}>
+                    <Link
+                        href={`/?page=${currentPage}`}
+                        underline="hover"
+                        onClick={nextPage}
+                    >
+                        <KeyboardArrowRight sx={{ pt: "4px" }} />
+                    </Link>
+                </Paper>
+            </Box>
+        </Box >
     );
 };
 export default _Pagination;

@@ -6,12 +6,14 @@ module.exports = {
     entry: path.resolve(__dirname, 'src/index.js'),//точка входа в наше приложение содержит абсолютный путь к index.js
     output: {
         path: path.resolve(__dirname, 'dist'),//путь куда будет собираться наш проект
-        filename: "main.js"// имя нашего бандла
+        filename: "main.js",// имя нашего бандла
+        publicPath: "/"
     },
     mode: "development",// по умолчанию webpack миницифирует скрипты, чтобы это избежать меняем режим
     //Нужно помочь вебпаку научиться работать с jsx и tsx файлами для этого используют ts loader
     
     devServer: {
+        historyApiFallback: true,
         static: path.resolve(__dirname, './dist'), // путь, куда "смотрит" режим разработчика
           compress: true, // это ускорит загрузку в режиме разработки
           port: 8081, // порт, чтобы открывать сайт по адресу localhost:8082, но можно поменять порт
@@ -64,7 +66,6 @@ module.exports = {
     plugins: [
         new HTMLWebpackPlugins({
            template: path.resolve(__dirname, 'src/public/index.html'),
-        //    favicon: "src/assets/favicon.svg",
         }),
     ],
     infrastructureLogging: {

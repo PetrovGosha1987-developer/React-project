@@ -1,26 +1,26 @@
-import React, {  useState, useEffect, useRef} from "react";
-import { Card, CardHeader, Avatar, IconButton, CardMedia, CardContent, Typography, CardActions, Collapse, Grid, Box, SvgIcon, MenuItem, Paper, MenuList, Popper, Grow, ClickAwayListener } from '@mui/material';
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { Link } from "react-router-dom";
+import { CurrentUserContext } from "../../context/CurrentUserContext";
+import { Card, CardHeader, Avatar, IconButton, CardMedia, CardContent, Typography, CardActions, Collapse, Grid, Box, SvgIcon, MenuItem, Paper, MenuList, Popper, Grow, ClickAwayListener } from "@mui/material";
 import { Favorite, MoreHoriz, ExpandMore, PanoramaFishEye, DeleteOutline, CreateOutlined } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
-
-import dayjs from "dayjs";
-import 'dayjs/locale/ru';
-
-import style from './styles.module.css';
-dayjs.locale('ru')
-
+import dayjs from "dayjs"; // yarn add dayjs
+import "dayjs/locale/ru";
+dayjs.locale("ru");
+import style from "./styles.module.css";
 
 const ExpandMoreStyle = styled((props) => {
     const { expand, ...other } = props;
     return <IconButton {...other} />;
-  })(({ expand }) => ({
+})(({ expand }) => ({
     transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
     marginLeft: 'auto',
-  }));
+}));
 
-  export const Post = ({ onPostLike, onDeletePost, currentUser, _id, image, likes, tags, comments, title, author: { avatar, name, email }, text, created_at, updated_at }) => {
+export const Post = ({ onPostLike, onDeletePost, _id, image, likes, tags, comments, title, author, text, created_at, updated_at }) => {
     const dataCreated = dayjs(created_at).format("DD-MM-YYYY HH:mm");
     const dataLastEdit = dayjs(updated_at).format("dddd, DD-MMMM-YYYY HH:mm");
+    const currentUser = useContext(CurrentUserContext); // useContext
     const isLiked = likes.some(id => id === currentUser._id);
     const [expanded, setExpanded] = useState(false);
     const [open, setOpen] = useState(false);
@@ -34,7 +34,6 @@ const ExpandMoreStyle = styled((props) => {
         if (anchorRef.current && anchorRef.current.contains(event.target)) {
             return;
         }
-
         setOpen(false);
     };
 
@@ -62,21 +61,36 @@ const ExpandMoreStyle = styled((props) => {
     function handleLikeClick() {
         onPostLike({ _id, likes })
     }
+    
     function handleDeletePostClick() {
         onDeletePost(_id);
     }
+
     return (
         <Grid className={style.grid} container item xs={12} sm={6} md={4}>
             <Card className={style.card} sx={{ maxWidth: 345 }}>
                 <CardHeader
                     avatar={
-                        <Avatar src={avatar && avatar} aria-label="recipe">
-                            {!avatar && name.slice(0, 1)}
-                        </Avatar>
+                        author._id !== currentUser._id
+                            ? <Avatar src={author.avatar && author.avatar} aria-label="recipe">
+                                {!author.avatar && author.name.slice(0, 1)}
+                            </Avatar>
+                            : <Avatar src={currentUser.avatar && currentUser.avatar} aria-label="recipe">
+                                {!currentUser.avatar && currentUser.name.slice(0, 1)}
+                            </Avatar>
                     }
-                    action={
-                        <div>
-                            <IconButton
+                    title={
+                        <Link to={`/post/${_id}`} style={{ textDecoration: "none", color: "#444444" }}>
+                            <Typography variant="body1" sx={{ fontWeight: 500, fontSize: "18px" }}>
+                                {author.name}
+                            </Typography>
+                        </Link>
+
+                    }
+                    subheader={author.email}
+                    action={// меню удаления и редактирования только на авторе
+                        <Box>
+                            {author._id === currentUser._id && <IconButton
                                 ref={anchorRef}
                                 id="composition-button"
                                 aria-controls={open ? 'composition-menu' : undefined}
@@ -85,7 +99,7 @@ const ExpandMoreStyle = styled((props) => {
                                 onClick={handleToggleMoreHoriz}
                             >
                                 <MoreHoriz />
-                            </IconButton>
+                            </IconButton>}
                             <Popper
                                 open={open}
                                 anchorEl={anchorRef.current}
@@ -124,26 +138,24 @@ const ExpandMoreStyle = styled((props) => {
                                     </Grow>
                                 )}
                             </Popper>
-                        </div>
+                        </Box>
                     }
-
-                    title={
-                        <Typography variant="body1">
-                            {name}
-                        </Typography>
-                    }
-                    subheader={email}
                 />
-                <CardMedia
-                    component="img"
-                    height="194"
-                    image={image}
-                    alt="Paella dish"
-                />
+                <Link to={`/post/${_id}`} style={{ textDecoration: "none", fontSize: "20px", color: "#444444" }}>
+                    <CardMedia
+                        component="img"
+                        height="194"
+                        image={image}
+                        alt="Paella dish"
+                    />
+                </Link>
                 <CardContent>
-                    <Typography variant="h6" color="text.secondary">
-                        {title}
-                    </Typography>
+                    <Link to={`/post/${_id}`} style={{ textDecoration: "none", color: "#444444" }}>
+                            <Typography variant="body1" sx={{ fontWeight: 500, fontSize: "18px"}}>
+                            {title}
+                            </Typography>
+                    </Link>
+
                     <Typography variant="body2" noWrap color="text.secondary">
                         {text}
                     </Typography>
@@ -193,10 +205,15 @@ const ExpandMoreStyle = styled((props) => {
                     </CardContent>
                 </Collapse>
                 <Box component="div" sx={{ pl: 2, pt: 2 }}>
-                    <Typography sx={{ pl: 0, mb: 2 }} paragraph variant="caption" color="text.secondary">
-                        Tags: {tags.map((item) =>
+                    <Typography
+                        sx={{ pl: 0, mb: 2 }}
+                        paragraph
+                        variant="caption"
+                        color="text.secondary"
+                    >
+                        Tags: {tags.map((tag) =>
                             <Box
-                                key={item}
+                                key={tag}
                                 component="span"
                                 sx={{
                                     ml: 1,
@@ -205,7 +222,7 @@ const ExpandMoreStyle = styled((props) => {
                                     borderRadius: "5px",
                                     background: "#f7f7f7"
                                 }}>
-                                {item}
+                                {tag}
                             </Box>)}
                     </Typography>
                 </Box>

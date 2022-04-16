@@ -11,7 +11,7 @@ export const TextSecond = ({ }) => {
                         color="black"
                         sx={{ pl: 0, pt: 2 }}
                         paragraph
-                        variant="subtitle2">
+                        variant="h7">
                         We're stoked that you're here. 🥳
                     </Typography>
                 </Box>

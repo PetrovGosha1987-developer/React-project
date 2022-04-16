@@ -9,7 +9,7 @@ export const UpperTextFirst = ({ }) => {
                 <Box>
                     <Typography
                         color="black"
-                        sx={{ pl: 1, pt: 2, mb: 0 }}
+                        sx={{ pl: 0, pt: 2, mb: 0 }}
                         paragraph
                         variant="h6">
                         Welcome to Our Image Board!
